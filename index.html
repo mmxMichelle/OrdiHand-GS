@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrdiHand-GS</title>
+<meta name="description" content="OrdiHand-GS: ordinal-guided tracking and hand-refined Gaussian avatars for digital signers.">
+<meta property="og:title" content="OrdiHand-GS: Ordinal-Guided Tracking and Hand-Refined Gaussian Avatars for Digital Signers">
+<meta property="og:image" content="static/images/teaser_figure.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<!--
+  Switches on the <body> tag: data-show-authors (author line, affiliation, contact) and
+  data-show-citation (BibTeX section; turn on once the arXiv entry exists).
+-->
+<style>
+  :root {
+    --text: #333;
+    --muted: #666;
+    --faint: #8a8a8a;
+    --link: #1772d0;
+    --link-hover: #0f5aa6;
+    --rule: #e6e6e6;
+    --panel: #f6f7f9;
+    --best: #111;
+    --todo-bg: #fff4c2;
+    --todo-line: #d4a400;
+    --bg: #fff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Lato, Verdana, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 970px; margin: 0 auto; padding: 0 16px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); text-decoration: underline; }
+  img, video { max-width: 100%; height: auto; display: block; }
+
+  header { text-align: center; padding: 48px 0 8px; }
+  h1, h2, h3 { font-family: "Source Sans 3", Calibri, Candara, Arial, sans-serif; font-weight: 300; color: var(--text); }
+  h1 { font-size: clamp(26px, 4.2vw, 39px); line-height: 1.25; margin: 0 0 10px; }
+  .venue { font-family: "Source Sans 3", sans-serif; font-size: 19px; color: var(--faint); margin: 0 0 18px; }
+  .authors { font-size: 18px; margin: 0 0 6px; }
+  .authors span { display: inline-block; margin: 0 10px; }
+  .affil { font-size: 16px; color: var(--text); margin: 0 0 18px; }
+  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 26px; }
+  .links a, .links span {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; border-radius: 999px; font-size: 15px;
+    border: 1px solid var(--rule); background: var(--panel); color: var(--text);
+  }
+  .links a:hover { border-color: var(--link); color: var(--link); text-decoration: none; }
+  .links .off { color: var(--faint); cursor: default; }
+  .links svg { width: 16px; height: 16px; flex: none; }
+
+  hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 8px 0 28px; }
+  section { margin: 0 0 44px; }
+  h2 { font-size: clamp(26px, 3.4vw, 32px); text-align: center; margin: 0 0 18px; }
+  h3 { font-size: 22px; font-weight: 400; margin: 28px 0 10px; }
+  p { margin: 0 0 14px; }
+  .caption { font-size: 15px; color: var(--muted); margin: 12px 0 0; }
+  .caption b { color: var(--text); }
+  figure { margin: 0; }
+  .abstract { text-align: justify; hyphens: auto; }
+
+  .contrib { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+  .contrib > div { background: var(--panel); border-radius: 8px; padding: 16px 18px; font-size: 15px; }
+  .contrib h4 { font-family: "Source Sans 3", sans-serif; font-weight: 600; font-size: 17px; margin: 0 0 6px; color: var(--text); }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 6px 0 22px; text-align: center; }
+  .stats > div { border: 1px solid var(--rule); border-radius: 8px; padding: 14px 10px; }
+  .stats .num { font-family: "Source Sans 3", sans-serif; font-size: 30px; font-weight: 400; color: var(--text); line-height: 1.2; }
+  .stats .lbl { font-size: 14px; color: var(--muted); }
+
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font-weight: 700; border-bottom: 1px solid #bbb; }
+  thead tr.grp th { font-weight: 400; color: var(--muted); border-bottom: 1px solid var(--rule); text-align: center; }
+  thead tr.grp th:first-child { border-bottom: 0; }
+  tbody tr:last-child td { border-bottom: 1px solid #bbb; }
+  table { border-top: 1px solid #bbb; }
+  tr.ours td { font-weight: 700; color: var(--best); }
+  tr.rule td { border-top: 1px solid var(--rule); }
+  td b { font-weight: 700; }
+  .ci { color: var(--faint); font-size: 13px; }
+  .note { font-size: 14px; color: var(--muted); margin: 6px 0 0; }
+
+  .video-box { background: #0e0f12; border-radius: 6px; overflow: hidden; }
+  .chapters { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+  .chapters button {
+    font: inherit; font-size: 14px; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--panel); color: var(--text);
+    border-radius: 999px; padding: 5px 12px;
+  }
+  .chapters button:hover { border-color: var(--link); color: var(--link); }
+  .chapters time { color: var(--faint); margin-right: 6px; }
+
+  ul.lim { padding-left: 20px; margin: 0 0 14px; }
+  ul.lim li { margin-bottom: 6px; }
+
+  pre.bib {
+    position: relative; background: var(--panel); border-radius: 6px; padding: 16px 18px;
+    font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .copy { float: right; font: inherit; font-size: 13px; cursor: pointer; border: 1px solid var(--rule); background: #fff; border-radius: 4px; padding: 3px 10px; color: var(--muted); }
+
+  footer { text-align: center; color: var(--faint); font-size: 14px; padding: 8px 0 40px; }
+  .todo { background: var(--todo-bg); border-bottom: 2px dashed var(--todo-line); padding: 0 3px; }
+  body[data-show-authors="false"] .author-block { display: none; }
+  body[data-show-citation="false"] #citation { display: none; }
+  .contact { font-size: 15px; color: var(--faint); margin: -10px 0 18px; }
+
+  @media (max-width: 720px) {
+    body { font-size: 15px; }
+    header { padding-top: 32px; }
+    .contrib, .stats { grid-template-columns: 1fr; }
+    .authors span { margin: 0 6px; }
+    .abstract { text-align: left; }
+  }
+</style>
+</head>
+<body data-show-authors="true" data-show-citation="false">
+<div class="wrap">
+
+<header>
+  <h1>OrdiHand-GS: Ordinal-Guided Tracking and Hand-Refined Gaussian Avatars for Digital Signers</h1>
+  <p class="venue">arXiv preprint</p>
+  <div class="author-block">
+    <p class="authors">
+      <span>Mingxuan Ma</span>
+      <span>Ronglai Zuo</span>
+    </p>
+    <p class="affil">Department of Computing, Imperial College London, London, UK</p>
+    <p class="contact"><a href="mailto:michelle.ma25@imperial.ac.uk">michelle.ma25@imperial.ac.uk</a> &middot; <a href="mailto:r.zuo@imperial.ac.uk">r.zuo@imperial.ac.uk</a></p>
+  </div>
+  <nav class="links" aria-label="Paper resources">
+    <span class="off" title="Link coming soon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>
+      Paper (coming soon)
+    </span>
+    <span class="off" title="Link coming soon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+      Supplementary (coming soon)
+    </span>
+    <a href="#video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>
+      Video
+    </a>
+    <a href="https://github.com/mmxMichelle/OrdiHand-GS">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/></svg>
+      Code
+    </a>
+  </nav>
+</header>
+
+<hr class="sep">
+
+<section>
+  <figure>
+    <img src="static/images/teaser_figure.jpg" width="2048" height="1128" alt="Five frames of a signing clip rendered by GUAVA with original tracking and by OrdiHand-GS; at the central frame the original tracking puts the hands in the wrong front-back order and OrdiHand-GS corrects it.">
+    <figcaption class="caption"><b>OrdiHand-GS improves hand interactions in digital signers.</b> Five evenly spaced frames of a monocular signing clip, rendered from the same target frames and crop by GUAVA with its original tracking and by the complete OrdiHand-GS. At the central interaction frame, the original expressive-human tracking places the overlapping hands in the wrong front&ndash;back order; ordinal-guided refinement corrects the order, and the full method adds hand-specific Gaussian refinement. The inset shows the original and refined fits at that frame (blue: left hand, orange: right hand); its human annotation is left hand in front.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Abstract</h2>
+  <div class="abstract">
+    <p>Digital signers, also known as signing avatars, convey sign language through animated virtual humans, where visual fidelity and linguistic intelligibility hinge primarily on the hands. When one hand crosses over the other, two failure modes dominate. First, monocular expressive-human tracking suffers from ordinal depth ambiguity: either hand can satisfy the same 2D landmarks, and the baseline tracker orders wrists at chance level on 365 annotated overlapping frames from How2Sign. Second, hand appearance remains blurred in neural rendering even after geometry is corrected.</p>
+    <p>We propose OrdiHand-GS to address these errors separately. Relative depth from a video depth estimator and apparent hand size vote, with confidence weighting and abstention, for a front&ndash;back relation, which enters expressive-human tracking as a hinge on median hand-surface depth. A source-conditioned residual head then refines the local positions of hand-associated UV Gaussians with the avatar backbone and renderer frozen. We instantiate the framework with GUAVA. Against matched unconstrained refinement, wrist-order accuracy rises from 32.9% to 77.3% at a cost of 0.39 pixels of reprojection error, while a random-sign placebo gives no balanced-accuracy gain. A 2&times;2 factorial evaluation attributes most of the interaction-rendering improvement to tracking-stage refinement, with a smaller additional benefit from the residual.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Method Overview</h2>
+  <figure>
+    <img src="static/images/method_overview.jpg" width="2600" height="1100" alt="Pipeline: ordinal cues from video depth and hand-hull size refine the EHM fit, which drives a frozen GUAVA backbone; a hand-specific UV Gaussian residual head refines the hands before rendering.">
+    <figcaption class="caption"><b>OrdiHand-GS framework.</b> Ordinal cues from VDA relative depth and projected hand-hull size are fused into a confidence-weighted sign and imposed through a hand-level depth hinge during EHM refinement (C1; zoom-in below). The refined EHM geometry drives the frozen GUAVA backbone with the source appearance. The dashed GUAVA-Hand block (C2) is the ownership-gated UV position residual; it is trained with the backbone and renderer frozen and evaluated together with C1 in a 2&times;2 factorial study.</figcaption>
+  </figure>
+  <div class="contrib">
+    <div>
+      <h4>Ordinal-guided EHM refinement</h4>
+      Relative depth and apparent hand size are fused by a confidence-weighted vote with abstention, and the resulting sign is imposed through a hand-level depth hinge while resuming expressive-human tracking. The constraint has no learned parameters.
+    </div>
+    <div>
+      <h4>Hand-specific UV Gaussian residuals</h4>
+      An ownership-gated, source-conditioned residual head refines the local positions of hand-associated UV Gaussians with the avatar backbone and renderer frozen, improving hand rendering on both original and refined tracking.
+    </div>
+    <div>
+      <h4>Controlled evaluation</h4>
+      365 human-annotated overlapping-hand frames from 171 How2Sign clips, evaluated with a matched-budget control, a random-sign placebo, overlap stratification and a 2&times;2 factorial rendering study.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Results</h2>
+
+  <div class="stats" aria-label="Headline numbers">
+    <div><div class="num">32.9% &rarr; 77.3%</div><div class="lbl">wrist-order accuracy, matched control &rarr; fused refinement</div></div>
+    <div><div class="num">184 / 22</div><div class="lbl">wrist orders corrected / newly broken, relative to control</div></div>
+    <div><div class="num">0.39 px</div><div class="lbl">added hand reprojection error</div></div>
+  </div>
+
+  <h3>Wrist order on 365 annotated How2Sign frames</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Tracking arm</th><th>Accuracy (%)</th><th>Balanced acc. (%)</th><th>&Delta; acc. vs. control</th><th>Corrected</th><th>New errors</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Original EHM</td><td>33.4 <span class="ci">[28.1, 39.1]</span></td><td>49.8 <span class="ci">[46.4, 52.7]</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Matched control</td><td>32.9 <span class="ci">[27.5, 38.3]</span></td><td>48.9 <span class="ci">[45.5, 52.0]</span></td><td>0</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Random-sign placebo</td><td>42.2 <span class="ci">[37.2, 47.6]</span></td><td>48.6 <span class="ci">[43.5, 53.7]</span></td><td>+9.3 <span class="ci">[3.7, 15.0]</span></td><td>71</td><td>37</td></tr>
+        <tr><td>VDA hinge only</td><td>67.1 <span class="ci">[62.2, 71.7]</span></td><td>67.4 <span class="ci">[61.9, 72.5]</span></td><td>+34.2 <span class="ci">[27.0, 41.3]</span></td><td>156</td><td>31</td></tr>
+        <tr><td>Area hinge only</td><td>73.7 <span class="ci">[68.4, 78.4]</span></td><td>74.9 <span class="ci">[69.5, 79.9]</span></td><td>+40.8 <span class="ci">[33.6, 47.9]</span></td><td>174</td><td>25</td></tr>
+        <tr class="ours"><td>Fused (OrdiHand-GS)</td><td>77.3 <span class="ci">[72.1, 81.5]</span></td><td>76.9 <span class="ci">[71.5, 81.7]</span></td><td>+44.4 <span class="ci">[36.9, 51.6]</span></td><td>184</td><td>22</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">95% clip-clustered bootstrap intervals in brackets. All arms resume the same original EHM fit with the same optimizer, seed, frames and budget. Randomizing the signs raises raw accuracy but leaves balanced accuracy at chance, so the gain comes from the sign information rather than from constraining itself.</p>
+
+  <h3>Factorial rendering evaluation (interaction crop, 365 frames)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Arm</th><th>Fused tracking</th><th>Hand residual</th><th>LPIPS &darr;</th><th>SSIM &uarr;</th><th>PSNR &uarr;</th><th>L1 &darr;</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>C0 (GUAVA)</td><td>&ndash;</td><td>&ndash;</td><td>0.3174</td><td>0.7055</td><td>16.91</td><td>0.0897</td></tr>
+        <tr><td>C1</td><td>yes</td><td>&ndash;</td><td>0.3065</td><td>0.7146</td><td>17.35</td><td>0.0865</td></tr>
+        <tr><td>C2</td><td>&ndash;</td><td>yes</td><td>0.3155</td><td>0.7092</td><td>17.07</td><td>0.0881</td></tr>
+        <tr class="ours"><td>C3 (OrdiHand-GS)</td><td>yes</td><td>yes</td><td>0.3047</td><td>0.7185</td><td>17.50</td><td>0.0851</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Most of the interaction-rendering gain comes from the tracking stage (C1 vs. C0); the hand residual adds a smaller, consistent improvement on either tracking. The two effects are close to additive, so no synergy is claimed.</p>
+
+  <h3>Comparison with monocular avatar methods</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr class="grp"><th></th><th>Full frame</th><th colspan="3">Interaction crop</th><th>Hand crops</th></tr>
+        <tr><th>Method</th><th>LPIPS &darr;</th><th>LPIPS &darr;</th><th>SSIM &uarr;</th><th>PSNR &uarr;</th><th>LPIPS &darr;</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>EVA</td><td><b>0.0940</b></td><td>0.3237</td><td>0.6942</td><td>16.51</td><td>0.3467</td></tr>
+        <tr><td>ExAvatar</td><td>0.1145</td><td>0.3510</td><td>0.6873</td><td>16.08</td><td>0.3793</td></tr>
+        <tr><td>GaussianAvatar&dagger;</td><td>0.1058</td><td>0.3435</td><td>0.6686</td><td>15.26</td><td>0.3641</td></tr>
+        <tr><td>SplattingAvatar&Dagger;</td><td>0.1252</td><td>0.3627</td><td>0.6825</td><td>17.35</td><td>0.3822</td></tr>
+        <tr><td>GUAVA</td><td>0.0986</td><td>0.3190</td><td>0.7064</td><td>16.95</td><td>0.3454</td></tr>
+        <tr class="ours"><td>OrdiHand-GS</td><td>0.0977</td><td>0.3026</td><td>0.7209</td><td>17.60</td><td>0.3236</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">127 annotated frames from 60 How2Sign clips. Per-subject methods are fitted to 140 frames of each clip; GUAVA and OrdiHand-GS use one reference image. &dagger;&thinsp;SMPL-X adapted, stage 1. &Dagger;&thinsp;SMPL-X mesh. Per-subject methods lead on the full frame; OrdiHand-GS is best on every interaction and hand metric, although its PSNR gains over SplattingAvatar are not statistically significant.</p>
+</section>
+
+<section>
+  <h2>Qualitative Results</h2>
+  <figure>
+    <img src="static/images/ordinal_refinement_examples.jpg" width="2000" height="1414" loading="lazy" alt="Four interaction frames: input, original EHM tracking and its GUAVA render, refined tracking and its render, ground truth.">
+    <figcaption class="caption"><b>Ordinal refinement on interaction frames.</b> Columns: input, original EHM tracking and its GUAVA render, refined (fused) tracking and its render, ground truth; all renders use the original GUAVA weights. Rows (a)&ndash;(c) are labeled left-front frames misordered by the original fit and corrected by refinement; (b)&ndash;(c) are random draws from the 184 corrected frames. Row (d) is unlabeled: the wrist order is flipped but the interlaced fingers are unchanged.</figcaption>
+  </figure>
+  <figure style="margin-top:30px">
+    <img src="static/images/comparison_six_methods.jpg" width="2084" height="1598" loading="lazy" alt="Interaction crops of six methods on six frames, one per signer.">
+    <figcaption class="caption"><b>Comparison with monocular avatar methods,</b> one frame per signer selected by a fixed hash before any cross-method score was computed. Columns: input, EVA, ExAvatar, GaussianAvatar&dagger;, SplattingAvatar&Dagger;, GUAVA, OrdiHand-GS, ground truth.</figcaption>
+  </figure>
+</section>
+
+<section id="video">
+  <h2>Video</h2>
+  <div class="video-box">
+    <video id="demo" controls preload="metadata" playsinline poster="static/images/demo_poster.jpg" width="1920" height="1080">
+      <source src="static/videos/demo.mp4" type="video/mp4">
+      Your browser cannot play this video. <a href="static/videos/demo.mp4">Download it instead.</a>
+    </video>
+  </div>
+  <ol class="chapters" aria-label="Video chapters">
+    <li><button data-t="7"><time>0:07</time>Problem</button></li>
+    <li><button data-t="19"><time>0:19</time>Ordinal cues</button></li>
+    <li><button data-t="33"><time>0:33</time>Slow-motion windows</button></li>
+    <li><button data-t="56"><time>0:56</time>Six-method comparison</button></li>
+    <li><button data-t="81"><time>1:21</time>2&times;2 factorial</button></li>
+  </ol>
+  <p class="note">All panels come from the fits, renders and checkpoints evaluated in the paper: weights are frozen and no optimization is run against any test frame. Fused tracking exists only on nine-frame windows around annotated frames, so moving segments are such windows played at 0.25&times; speed.</p>
+</section>
+
+<section>
+  <h2>Limitations</h2>
+  <ul class="lim">
+    <li>Ordinal cues can be wrong. Relative to the matched control, fused refinement introduces 22 new ordering errors; in 21 of them at least one cue votes for the wrong hand.</li>
+    <li>The median hand-surface constraint orders the hands as a whole; it does not resolve finger-level interleaving or contact.</li>
+    <li>Refined tracking and rendering are evaluated on labeled interaction frames within short windows, which does not establish full-video stability.</li>
+    <li>Training and evaluation are video-disjoint rather than signer-disjoint, within one avatar backbone; sign intelligibility for signing users is not evaluated.</li>
+  </ul>
+  <figure>
+    <img src="static/images/failure_cases.jpg" width="1828" height="1256" loading="lazy" alt="Four new ordering errors: input, control tracking and render, fused tracking and render, ground truth.">
+    <figcaption class="caption"><b>Failure cases.</b> Four of the 22 new ordering errors introduced by fused refinement, drawn at random with a fixed seed. Columns: input, control tracking and its render, fused tracking and its render, ground truth (blue: left hand, orange: right hand).</figcaption>
+  </figure>
+</section>
+
+<section class="author-block" id="citation">
+  <h2>Citation</h2>
+<pre class="bib"><button class="copy" type="button" id="copyBib">Copy</button><code id="bibtex">@article{ma2026ordihandgs,
+  title   = {OrdiHand-GS: Ordinal-Guided Tracking and Hand-Refined
+             Gaussian Avatars for Digital Signers},
+  author  = {Ma, Mingxuan and Zuo, Ronglai},
+  journal = {<span class="todo">arXiv preprint arXiv:XXXX.XXXXX</span>},
+  year    = {<span class="todo">2026</span>}
+}</code></pre>
+</section>
+
+<footer>
+  This work builds on GUAVA, How2Sign and Video Depth Anything.
+  <br>Contact: <a href="mailto:michelle.ma25@imperial.ac.uk">michelle.ma25@imperial.ac.uk</a>, <a href="mailto:r.zuo@imperial.ac.uk">r.zuo@imperial.ac.uk</a>
+</footer>
+
+</div>
+<script>
+  (function () {
+    var v = document.getElementById('demo');
+    document.querySelectorAll('.chapters button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        v.currentTime = Number(b.dataset.t);
+        var p = v.play(); if (p && p.catch) p.catch(function () {});
+      });
+    });
+    var btn = document.getElementById('copyBib');
+    btn.addEventListener('click', function () {
+      var text = document.getElementById('bibtex').innerText;
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {});
+      }
+    });
+  })();
+</script>
+</body>
+</html>
